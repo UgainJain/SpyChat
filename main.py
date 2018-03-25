@@ -38,17 +38,17 @@ def spy_chat(new):
         if menuchoice == "1":
             if new == 0:
                 from spy_details import status
-                print("Your current status is  : %s" % status)
+                print("Your current status is  : %s" % status)    # displays your current status
             elif new == 2:
-                print("your status is : %s" % status)
+                print("your status is : %s" % status) #displays status of new user
             else:
-                print("Add ur status :")
+                print("Add ur status :")  # ask for a new status 
                 status = input()
                 print("Your status is - %s" % status)
                 new = 2
             i = i+1
         elif menuchoice == "2":
-            print("QUITTING....")
+            print("QUITTING....") # quits the program
             exit()
         else:
             i = i+1
@@ -67,6 +67,6 @@ if user == 'Y':
           (salutation, name, age, rating))
 else:
     new_user = 1
-    entry()
+    entry() #######TAKES DETAILS OF A NEW USER
 
 spy_chat(new_user)
