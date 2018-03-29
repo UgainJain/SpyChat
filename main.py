@@ -34,21 +34,24 @@ def spy_chat():
     current_status_message = None
     while show_menu:
         print("What do you want to do?")
-        menu_choices = "1. Add a status update \n2. Add a friend  \n3. Exit the Application\nInput :- "
+        menu_choices = "1. Add a status update \n2. Add a friend  \n3. Send message \n4.Exit the Application\nInput " \
+                       ":- "
         menuchoice = input(menu_choices)
         if menuchoice == "1":
             current_status_message = add_status(current_status_message)
         elif menuchoice == "2":
-            no = add_friend()# no of friends returned
+            no = add_friend()  # no of friends returned
             print("No of friends : %d" % no)
-        elif menuchoice== '3':
+        elif menuchoice == "3":
+            select_a_friend()
+
+        elif menuchoice== '4':
             print("QUITTING....")
             show_menu = False
 
         else:
             print("invalid input")
             pass
-
 
 
 def add_status(current_status_message):
@@ -60,11 +63,13 @@ def add_status(current_status_message):
     if default.upper() == 'N':
         new_status_message = input("Which status you want to set ??")
         if len(new_status_message) > 0:
-            updated_status_message = new_status_message# updates status
-            STATUS_MESSAGES.append(updated_status_message) # Entered in the list
+            updated_status_message = new_status_message  # updates status
+            STATUS_MESSAGES.append(updated_status_message)  # Entered in the list
+            print(updated_status_message + " : is now set as your as status")
         else:
-            print("Please enter a valid status...")#invalid status
-            updated_status_message = current_status_message # assign previous status
+            print("Please enter a valid status...")    # invalid status
+            updated_status_message = current_status_message  # assign previous status
+            print(updated_status_message + " : Remains as your as status")
     elif default.upper() == 'Y':
             item_position = 1
             for message in STATUS_MESSAGES:
@@ -72,7 +77,8 @@ def add_status(current_status_message):
                 item_position = item_position + 1
             menu_selection = int(input("What is your desired status?"))
             if len(STATUS_MESSAGES) >= menu_selection:
-                updated_status_message = STATUS_MESSAGES[menu_selection - 1]# set desired status
+                updated_status_message = STATUS_MESSAGES[menu_selection - 1] # set desired status
+                print(updated_status_message + " : is now set as your as status")  # print desired status
             else:
                 print("invalid input...")
                 updated_status_message = current_status_message # assign previous status
@@ -82,40 +88,40 @@ def add_status(current_status_message):
     return updated_status_message
 
 
-
 def add_friend():
-    new_name  = input("Whats your friend spy name?")
-    new_salutation =input("what would be the salutation, Mr. or Mrs??")
-    new_name = new_salutation + " " + new_name
-    new_age = int(input("what is friends age?"))
-    new_rating = float(input("what's your friend spy rating??"))
-    if len(new_name)>0 and 12 < new_age < 50: ### add friend
-        Friend_name.append(new_name)
-        Friend_age.append(new_age)
-        Friend_rating.append(new_rating)
-        Friend_status.append(True)
-    else:     ##invalid details
+    new_friend = {"Name": "", "Salutation": "", "age": 0, "Rating": 0.0, }
+    new_friend["Name"] = input("Whats your friend spy name?")
+    new_friend["Salutation"] =input("what would be the salutation, Mr. or Mrs??")
+    new_friend["Name"] = new_friend["Salutation"] + " " + new_friend["Name"]
+    new_friend["age"] = int(input("what is friends age?"))
+    new_friend["Rating"] = float(input("what's your friend spy rating??"))
+    if len(new_friend["Name"])>0 and 12 < new_friend["age"] < 50:  # add friend
+        Friends.append(new_friend)
+    else:     # invalid details
         print("Sorry we can't add your friend's details please try again")
-    return len(Friend_name)
+    return len(Friends)
 
+
+def select_a_friend():
+    item_no = 0
+    for friend in Friends:
+        print("%d . %s" % (item_no+1, friend["Name"]))
+        item_no = item_no + 1
+    friend_no = int(input("Select your Friend : "))
+    print("You selected %d no Friend" % friend_no)
 
 
 user = input("Do you want to continue with the default user ?(Y/N)")
 new_user = 0
 if user.upper() == 'Y':
 
-    from spy_details import name
-    from spy_details import salutation
-    from spy_details import age
-    from spy_details import rating
-    print('Welcome,%s  %s with %d years of age and %.1f rating. Welcome to spychat.... ' %
-          (salutation, name, age, rating))
+    from spy_details import spy
+
+    print('Welcome,%s  %s with %d years of age and %.1f rating. Welcome to SpyChat.... ' %
+          (spy["Salutation"], spy["name"], spy["age"], spy["Rating"]))
 else:
     new_user = 1
     entry()
-STATUS_MESSAGES =['Crazy me...', 'Mandir wahin banaenge...', 'lol']
-Friend_name = []
-Friend_age = []
-Friend_rating = []
-Friend_status = []
+STATUS_MESSAGES =['Crazy me...', ' Mandir wahin banaenge...', 'lol']
+Friends = []
 spy_chat()
