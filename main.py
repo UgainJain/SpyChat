@@ -1,5 +1,4 @@
 from steganography.steganography import Steganography
-from datetime import datetime
 
 
 def entry():
@@ -38,10 +37,8 @@ def spy_chat():
     current_status_message = None
     while show_menu:
         print("What do you want to do?")
-        menu_choices = "1. Add a status update \n2. Add a friend  \n3. Send message \n4. Read a message \n5. Exit " \
-                       "the " \
-                       "Application \nInput :- "
-
+        menu_choices = "1. Add a status update \n2. Add a friend  \n3. Send message \n4. Read a message \n5. Exit the Application " \
+                       "\nInput :- "
         menuchoice = raw_input(menu_choices)
         if menuchoice == "1":
             current_status_message = add_status(current_status_message)
@@ -52,7 +49,7 @@ def spy_chat():
             send_massage()
         elif menuchoice == "4":
             read_message()
-        elif menuchoice == '5':
+        elif menuchoice== '5':
             print("QUITTING....")
             show_menu = False
 
@@ -66,7 +63,7 @@ def add_status(current_status_message):
         print("Your current status is  : %s" % current_status_message)
     else:
         print("You don't have any status right now")
-    default = raw_input("Do you want to select from the previous status??(Y/N)")
+    default =raw_input( "Do you want to select from the previous status??(Y/N)")
     if default.upper() == 'N':
         new_status_message = raw_input("Which status you want to set ??")
         if len(new_status_message) > 0:
@@ -84,11 +81,11 @@ def add_status(current_status_message):
                 item_position = item_position + 1
             menu_selection = int(raw_input("What is your desired status?"))
             if len(STATUS_MESSAGES) >= menu_selection:
-                updated_status_message = STATUS_MESSAGES[menu_selection - 1]  # set desired status
+                updated_status_message = STATUS_MESSAGES[menu_selection - 1] # set desired status
                 print(updated_status_message + " : is now set as your as status")  # print desired status
             else:
                 print("invalid raw_input...")
-                updated_status_message = current_status_message  # assign previous status
+                updated_status_message = current_status_message # assign previous status
     else:
         print("invalid raw_input")
         pass
@@ -109,7 +106,7 @@ def add_friend():
     return len(Friends)
 
 
-def select_a_friend():  # select friends from the list
+def select_a_friend():
     item_no = 0
     if len(Friends) != 0:
         for friend in Friends:
@@ -128,36 +125,23 @@ def select_a_friend():  # select friends from the list
         select_a_friend()
 
 
-def send_massage():  # sends the message to selected friend
-    selection = select_a_friend()
-    image = "ac1.jpg"
+def send_massage():
+    selection = select_a_friend();
+    image = raw_input(" Name of image to be encoded :")
     out_path = "ac3.jpg"
     text = raw_input("what text do you want to encode :")
-    Steganography.encode(image, out_path, text)
-    text = "You : " + text
-    new_chat = {
-        "message": text,
-        "time": datetime.now(),
-        "send_by_me": True
-    }
-
+    Steganography.encode(image,out_path,text)
     print("Message sent... ")
+    text = "You : " + text
+    Friends[selection]["Chats"].append(text)
 
-    Friends[selection]["Chats"].append(new_chat)
 
-
-def read_message():  # reads the message received from the friend
+def read_message():
     selection = select_a_friend()
-
-    image = "ac3.jpg"
+    image = raw_input("Name of image to be decoded : ")
     text = Steganography.decode(image)
-    text = Friends[selection]["Name"] + " : " + text
-    new_chat = {
-        "message": text,
-        "time": datetime.now(),
-        "send_by_me": False
-    }
-    Friends[selection]["Chats"].append(new_chat)
+    text = Friends[selection]["Name"] + " : "+ text
+    Friends[selection]["Chats"].append(text)
     print(text)
 
 
@@ -172,6 +156,6 @@ if user.upper() == 'Y':
 else:
     new_user = 1
     entry()
-STATUS_MESSAGES = ['Crazy me...', ' Mandir wahin banaenge...', 'lol']
+STATUS_MESSAGES =['Crazy me...', ' Mandir wahin banaenge...', 'lol']
 Friends = []
 spy_chat()
