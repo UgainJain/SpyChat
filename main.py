@@ -1,5 +1,5 @@
 from steganography.steganography import Steganography
-
+from datetime import datetime
 
 def entry():
     name = raw_input("What's your spy name??")
@@ -133,7 +133,12 @@ def send_massage():
     Steganography.encode(image,out_path,text)
     print("Message sent... ")
     text = "You : " + text
-    Friends[selection]["Chats"].append(text)
+    new_chat = {
+        "message": text,
+        "time": datetime.now(),
+        "send_by_me": True
+    }
+    Friends[selection]["Chats"].append(new_chat)
 
 
 def read_message():
@@ -141,7 +146,12 @@ def read_message():
     image = raw_input("Name of image to be decoded : ")
     text = Steganography.decode(image)
     text = Friends[selection]["Name"] + " : "+ text
-    Friends[selection]["Chats"].append(text)
+    new_chat = {
+        "message": text,
+        "time": datetime.now(),
+        "send_by_me": False
+    }
+    Friends[selection]["Chats"].append(new_chat)
     print(text)
 
 
