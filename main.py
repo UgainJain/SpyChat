@@ -1,5 +1,9 @@
 from steganography.steganography import Steganography
-from datetime import datetime
+
+import spy_details
+STATUS_MESSAGES =['Crazy me...', ' Mandir wahin banaenge...', 'lol']
+Friends = []
+
 
 def entry():
     name = raw_input("What's your spy name??")
@@ -21,10 +25,8 @@ def entry():
             else:
                 print("We can always use somebody to help in the office.")
             ol = bool(raw_input("Are u online???"))
-            if ol == False:
-                print("Authentication complete, welcome " + full_name + " with age " + repr(age) + " and rating of " + repr(rating) + " Proud to have u you on board")
-            else:
-                print("  ")
+            print("Authentication complete, welcome " + full_name + " with age " + repr(age) + " and rating of " + repr(rating) + " Proud to have u you on board")
+            spy =spy_details.Spy(name,salutation, age, rating)
         else:
             print("Sorry you are not of the correct age to be a spy")
             exit()
@@ -93,14 +95,13 @@ def add_status(current_status_message):
 
 
 def add_friend():
-    new_friend = {"Name": "", "Salutation": "", "age": 0, "Rating": 0.0, "Chats": []}
-    new_friend["Name"] = raw_input("Whats your friend spy name?")
-    new_friend["Salutation"] =raw_input("what would be the salutation, Mr. or Mrs??")
-    new_friend["Name"] = new_friend["Salutation"] + " " + new_friend["Name"]
-    new_friend["age"] = int(raw_input("what is friends age?"))
-    new_friend["Rating"] = float(raw_input("what's your friend spy rating??"))
-    if len(new_friend["Name"])>0 and 12 < new_friend["age"] < 50:  # add friend
-        Friends.append(new_friend)
+    Name = raw_input("Whats your friend spy name?")
+    Salutation =raw_input("what would be the salutation, Mr. or Mrs??")
+    age= int(raw_input("what is friends age?"))
+    Rating = float(raw_input("what's your friend spy rating??"))
+    if len(Name)>0 and 12 < age < 50:  # add friend
+        friend_no = spy_details.Spy(Name,Salutation,age,Rating)
+        Friends.append(friend_no)
     else:     # invalid details
         print("Sorry we can't add your friend's details please try again")
     return len(Friends)
@@ -110,7 +111,7 @@ def select_a_friend():
     item_no = 0
     if len(Friends) != 0:
         for friend in Friends:
-            print("%d . %s" % (item_no+1, friend["Name"]))
+            print("%d . %s" % (item_no+1, friend.name))
             item_no = item_no + 1
         friend_no = int(raw_input("Select your Friend : "))
         if friend_no <= len(Friends) and friend_no != 0:
@@ -133,39 +134,31 @@ def send_massage():
     Steganography.encode(image,out_path,text)
     print("Message sent... ")
     text = "You : " + text
-    new_chat = {
-        "message": text,
-        "time": datetime.now(),
-        "send_by_me": True
-    }
-    Friends[selection]["Chats"].append(new_chat)
+    chat = spy_details.ChatMessage(text,True)
+    Friends[selection]["Chats"].append(chat)
 
 
 def read_message():
     selection = select_a_friend()
     image = raw_input("Name of image to be decoded : ")
     text = Steganography.decode(image)
-    text = Friends[selection]["Name"] + " : "+ text
-    new_chat = {
-        "message": text,
-        "time": datetime.now(),
-        "send_by_me": False
-    }
-    Friends[selection]["Chats"].append(new_chat)
+    text = Friends[selection].Name + " : " + text
+    chat = spy_details.ChatMessage(text, True)
+    Friends[selection]["Chats"].append(chat)
     print(text)
 
 
 user = raw_input("Do you want to continue with the default user ?(Y/N)")
-new_user = 0
+
 if user.upper() == 'Y':
 
     from spy_details import spy
 
     print('Welcome,%s  %s with %d years of age and %.1f rating. Welcome to SpyChat.... ' %
-          (spy["Salutation"], spy["name"], spy["age"], spy["Rating"]))
+          (spy.salutation, spy.name, spy.age, spy.rating))
+    from spy_details import friend_one,friend_three,friend_two
+    Friends = [friend_one, friend_two, friend_three]
 else:
-    new_user = 1
     entry()
-STATUS_MESSAGES =['Crazy me...', ' Mandir wahin banaenge...', 'lol']
-Friends = []
+
 spy_chat()
