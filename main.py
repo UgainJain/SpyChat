@@ -1,5 +1,5 @@
 from steganography.steganography import Steganography
-
+import csv
 import spy_details
 STATUS_MESSAGES =['Crazy me...', ' Mandir wahin banaenge...', 'lol']
 Friends = []
@@ -100,8 +100,12 @@ def add_friend():
     age= int(raw_input("what is friends age?"))
     Rating = float(raw_input("what's your friend spy rating??"))
     if len(Name)>0 and 12 < age < 50:  # add friend
-        friend_no = spy_details.Spy(Name,Salutation,age,Rating)
-        Friends.append(friend_no)
+        spy = spy_details.Spy(Name,Salutation,age,Rating)
+        Friends.append(spy)
+        with open('friends.csv', 'a') as friends_data:
+            writer = csv.writer(friends_data)
+            writer.writerow([spy.name, spy.salutation, spy.rating, spy.age, spy.is_online])
+
     else:     # invalid details
         print("Sorry we can't add your friend's details please try again")
     return len(Friends)
@@ -136,6 +140,9 @@ def send_massage():
     text = "You : " + text
     chat = spy_details.ChatMessage(text,True)
     Friends[selection].chats.append(chat)
+    with open('chats.csv', 'a') as chat_data:
+        writer = csv.writer(chat_data)
+        writer.writerow([text, True])
 
 
 def read_message():
@@ -148,6 +155,20 @@ def read_message():
     print(text)
 
 
+def load_Friends():
+    with open('friends.csv', 'rb') as friends_data:
+        read = csv.reader(friends_data)
+        for row in read :
+            spy = spy_details.Spy(name=row[0], salutation=row[1], rating=float(row[2]), age=int(row[3]))
+            Friends.append(spy)
+    with open('chats.csv', 'rb') as chst_data:
+        read2 = csv.reader(chst_data)
+        for friend in range(len(Friends)):
+            for row in read2:
+                chat = spy_details.ChatMessage(message= row[0], sent_by_me= row[1])
+                Friends[friend].chats.append(chat)
+
+
 user = raw_input("Do you want to continue with the default user ?(Y/N)")
 
 if user.upper() == 'Y':
@@ -156,8 +177,7 @@ if user.upper() == 'Y':
 
     print('Welcome,%s  %s with %d years of age and %.1f rating. Welcome to SpyChat.... ' %
           (spy.salutation, spy.name, spy.age, spy.rating))
-    from spy_details import friend_one,friend_three,friend_two
-    Friends = [friend_one, friend_two, friend_three]
+    load_Friends()
 else:
     entry()
 
