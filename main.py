@@ -1,9 +1,12 @@
 from steganography.steganography import Steganography
 import csv
 from spy_details import Spy, ChatMessage
+from datetime import datetime
 
 STATUS_MESSAGES = ['Crazy me...', ' Mandir wahin banaenge...', 'lol']
 Friends = []
+safety_keys = ["sos", "save me", "help"]
+chat =[]
 
 
 def add_status(current_status_message):
@@ -81,48 +84,60 @@ def send_massage(spy_name):
     image = raw_input(" Name of image to be encoded :")
     out_path = "ac3.jpg"
     text = raw_input("what text do you want to encode :")
+    text= send_message_help(text)
     Steganography.encode(image, out_path, text)
     print("Message sent... ")
-    chat = ChatMessage(spy_name=spy_name, friend_name=Friends[selection].name, message=text, sent_by_me=True)
+    chat = ChatMessage(spy_name=spy_name, friend_name=Friends[selection].name, message=text,
+                       time=datetime.now(), sent_by_me=True)
     with open('chats.csv', 'a') as chat_data:
         writer = csv.writer(chat_data)
-        writer.writerow([spy_name, Friends[selection].name, text, True])
+        writer.writerow([spy_name, Friends[selection].name, text, datetime.now(), True])
     Friends[selection].chats.append(chat)
 
+
+def send_message_help(text):
+    if text in safety_keys:
+        from termcolor import colored
+        text = colored( "ITS AN EMERGENCY!!!!!!", "red")
+        print(text)
+        return text
+    else:
+        return text
 
 
 def read_message(spy_name):
     selection = select_a_friend()
     image = raw_input("Name of image to be decoded : ")
     text = Steganography.decode(image)
-    chat = ChatMessage(spy_name=spy_name, friend_name=Friends[selection].name, message=text, sent_by_me=True)
+    chat = ChatMessage(spy_name=spy_name, friend_name=Friends[selection].name, message=text, time=datetime.now(), sent_by_me=True)
     Friends[selection].chats.append(chat)
     with open('chats.csv', 'a') as chat_data:
         writer = csv.writer(chat_data)
-        writer.writerow([spy_name, Friends[selection].name, text, False])
+        writer.writerow([spy_name, Friends[selection].name, text, datetime.now(), False])
     print(text)
 
 
 def print_chats(spy_name):
     selection = select_a_friend()
     friendname = str(Friends[selection].name)
+    chat_dat=[]
     from termcolor import colored
     with open('chats.csv', 'rb') as chat_data:
         read2 = csv.reader(chat_data)
         for row in read2:
-            chats = ChatMessage(spy_name=row[0], friend_name=row[1], message=row[2], sent_by_me=row[3])
-            print type(chats.friend_name), type(friendname)
+            chats = ChatMessage(spy_name=row[0], friend_name=row[1], message=row[2], time=row[3], sent_by_me=row[4])
             frend = str(chats.friend_name)
-            print(frend, friendname)
             if frend == friendname:
-                if chats.sent_by_me == True:
+                if bool(chats.sent_by_me) is True:
                     print colored(spy_name, 'red')
-                    print colored("On time :" + chats.time, 'blue')
-                    print("Message" + chats.message)
-                elif chats.sent_by_me is False:
+                    print colored("%s" % chats.time, "blue")
+                    print("Message " + chats.message)
+                elif bool(chats.sent_by_me) is False:
                     print colored(Friends[selection].name, 'red')
                     print colored("On time : if c" + chats.time, 'blue')
                     print("Message" + chats.message)
+                else:
+                    print("qwert")
             else:
                 print("no chat found")
 
@@ -137,7 +152,7 @@ def load_Friends():
         read2 = csv.reader(chat_data)
         for friend in range(len(Friends)):
             for row in read2:
-                chat = ChatMessage(spy_name=row[0], friend_name=row[1], message=row[2], sent_by_me=row[3])
+                chat = ChatMessage(spy_name=row[0], friend_name=row[1], message=row[2],time= row[3], sent_by_me=row[4])
                 Friends[friend].chats.append(chat)
 
 
