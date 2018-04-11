@@ -22,14 +22,12 @@ class Spy:
 
 
 class ChatMessage:
-
-    def __init__(self, message, sent_by_me):
+    def __init__(self, spy_name, friend_name, message, sent_by_me):
+        self.spy_name = spy_name
+        self.friend_name = friend_name
         self.message = message
-        self.time = datetime.now()
         self.sent_by_me = sent_by_me
+        self.time = datetime.now()
 
 
-spy = Spy("Ugain jain", "Mr.", 21, 4)
-friend_one = Spy('Raja', 'Mr.', 27, 4.9)
-friend_two = Spy('Mata Hari', 'Ms.', 21, 4.39)
-friend_three = Spy('No', 'Dr.', 37, 4.95)
+spy = Spy("Ugain", "Mr.", 21, 4)
